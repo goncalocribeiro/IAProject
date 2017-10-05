@@ -25,10 +25,16 @@ def pos_c(pos):
 #Auxiliar function to draw a board
 #draw_board(<board>)
 def draw_board(board):
-    print(board)
+    draw_line = ""
+    for i in range(len(board)):
+        line = board[i]
+        for j in range(len(line)):
+            draw_line += str(line[j]) + " "
+        print draw_line
+        draw_line = ""
 
 #board_find_groups(<board>) -> [2 valores]
 
 #board_remove_group(<board>, <group>) -> [5 valores]
 
-draw_board([[1,2,3,4],[5,6,7,8]])
+draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
