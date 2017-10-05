@@ -30,3 +30,5 @@ def draw_board(board):
 #board_find_groups(<board>) -> [2 valores]
 
 #board_remove_group(<board>, <group>) -> [5 valores]
+
+draw_board([[1,2,3,4],[5,6,7,8]])
