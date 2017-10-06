@@ -30,53 +30,19 @@ def is_adjacent(pos1, pos2):
 	return False
 
 def adjacent_positions(pos, board):
-	boardLSize = board_l(board) -1
-	boardCSize = board_c(board) -1
+	boardLSize = board_l(board)
+	boardCSize = board_c(board)
 
 	posLine = pos_l(pos)
 	posColumn = pos_c(pos)
 
 	adjacentPositions = []
 
-	if (posLine == 0):
-		if (posColumn == 0):
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-		elif (posColumn < boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-		elif (posColumn == boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-
-	elif (posLine < boardLSize):
-		if (posColumn == 0):
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-		elif (posColumn < boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-		elif (posColumn == boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine+1,posColumn))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-
-	elif (posLine == boardLSize):
-		if (posColumn == 0):
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-		elif (posColumn < boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine,posColumn+1))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-		elif (posColumn == boardCSize):
-			adjacentPositions.append(make_pos(posLine,posColumn-1))
-			adjacentPositions.append(make_pos(posLine-1,posColumn))
-
+	for l in range(0,boardLSize):
+		for c in range(0,boardCSize): 
+			currentPos = make_pos(l,c)
+			if(is_adjacent(pos,currentPos)):
+				adjacentPositions.append(currentPos)
 	return adjacentPositions
 
 # ------------------------------------ TIPOS ------------------------------------#
@@ -115,12 +81,28 @@ def board_l(board):
 
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
-    groups = []
-    for i in range(len(board)):
-        line = board[i]
-        for j in range(len(line)):
-            positionCont = line[j] #conteudo da posicao
+    groups = {} #dictionary where the color number is the index
+    boardCSize = board_c(board)
+    boardLSize = board_l(board)
+
+    for l in range(0,boardLSize):
+        for c in range(0, boardCSize):
+            positionCont = board[l][c] #conteudo da posicao
             if(color(positionCont)): #posicao tem cor
+            	currentPos = make_pos(l,c)
+                adjacentPositions = adjacent_positions(currentPos, board)
+
+                for adj in range(adjacent_positions):
+                	adjL = pos_l(adj)
+                	adjC = pos_c(adj)
+                	adjCont = board[adjL][adjC]
+
+                	if (positionCont == adjCont):
+                		g = groups[positionCont]
+                		g.append(adj)
+                	#??????????????????????????????????????
+
+
                 if(len(groups) != 0): #existe grupos
                     groupsLast = groups[len(groups)-1] #ultima lista em groups
                     print "ULTIMA LISTA: " + str(groupsLast)
@@ -148,5 +130,4 @@ def board_find_groups(board):
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 #draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
 #board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
-
-print adjacent_positions((3,4),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+#print adjacent_positions((2,2),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
