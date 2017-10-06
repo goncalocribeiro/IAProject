@@ -29,9 +29,55 @@ def is_adjacent(pos1, pos2):
 			return True
 	return False
 
-def adjacent_position(pos):
-	#return adjacent positions of pos
+def adjacent_positions(pos, board):
+	boardLSize = board_l(board) -1
+	boardCSize = board_c(board) -1
 
+	posLine = pos_l(pos)
+	posColumn = pos_c(pos)
+
+	adjacentPositions = []
+
+	if (posLine == 0):
+		if (posColumn == 0):
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+		elif (posColumn < boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+		elif (posColumn == boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+
+	elif (posLine < boardLSize):
+		if (posColumn == 0):
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+		elif (posColumn < boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+		elif (posColumn == boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine+1,posColumn))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+
+	elif (posLine == boardLSize):
+		if (posColumn == 0):
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+		elif (posColumn < boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine,posColumn+1))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+		elif (posColumn == boardCSize):
+			adjacentPositions.append(make_pos(posLine,posColumn-1))
+			adjacentPositions.append(make_pos(posLine-1,posColumn))
+
+	return adjacentPositions
 
 # ------------------------------------ TIPOS ------------------------------------#
 
@@ -58,6 +104,11 @@ def pos_c(pos):
 #Lista [(l,c),(l,c),(l,c),...]
 
 #TAI board
+def board_c(board):
+	return len(board[0])
+
+def board_l(board):
+	return len(board)
 
 
 # ------------------------------------ OPERACOES ------------------------------------#
@@ -97,7 +148,5 @@ def board_find_groups(board):
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 #draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
 #board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
-if(is_adjacent((1,2),(2,2))):
-	print "TRUE"
-else:
-	print "FALSE"
+
+print adjacent_positions((3,4),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
