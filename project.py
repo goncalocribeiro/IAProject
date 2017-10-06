@@ -53,7 +53,7 @@ def board_find_groups(board):
         for j in range(len(line)):
             positionCont = line[j] #conteudo da posicao
             if(color(positionCont)): #posicao tem cor
-                if(len(groups) != 0):
+                if(len(groups) != 0): #existe grupos
                     groupsLast = groups[len(groups)-1] #ultima lista em groups
                     print "ULTIMA LISTA: " + str(groupsLast)
 
@@ -61,6 +61,11 @@ def board_find_groups(board):
                     position_line = pos_l(position)
                     position_column = pos_c(position)
                     contentInPosition = board[position_line][position_column]
+
+                    if(contentInPosition == positionCont):
+                    	print "TRUE"
+                    else:
+                    	print "FALSE"
                     print contentInPosition
                 else:
                     groupsPos = make_pos(i,j) #cria posicao correspondente ao conteudo
