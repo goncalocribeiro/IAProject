@@ -15,6 +15,22 @@ def draw_board(board):
         print draw_line
         draw_line = ""
 
+def is_adjacent(pos1, pos2):
+	pos1Line = pos_l(pos1)
+	pos1Column = pos_c(pos1)
+	pos2Line = pos_l(pos2)
+	pos2Column = pos_c(pos2)
+
+	if(pos1Line == pos2Line):
+		if((pos1Column == pos2Column-1) or (pos1Column == pos2Column+1)):
+			return True
+	elif(pos1Column == pos2Column):
+		if((pos1Line == pos2Line-1) or (pos1Line == pos2Line+1)):
+			return True
+	return False
+
+def adjacent_position(pos):
+	#return adjacent positions of pos
 
 
 # ------------------------------------ TIPOS ------------------------------------#
@@ -45,6 +61,7 @@ def pos_c(pos):
 
 
 # ------------------------------------ OPERACOES ------------------------------------#
+
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
     groups = []
@@ -58,22 +75,29 @@ def board_find_groups(board):
                     print "ULTIMA LISTA: " + str(groupsLast)
 
                     position = groupsLast[0]
-                    position_line = pos_l(position)
-                    position_column = pos_c(position)
-                    contentInPosition = board[position_line][position_column]
+                    positionLine = pos_l(position)
+                    positionColumn = pos_c(position)
+                    contentInGroupPosition = board[positionLine][positionColumn]
 
-                    if(contentInPosition == positionCont):
-                    	print "TRUE"
+                    if(contentInGroupPosition == positionCont):
+                    	groupsPos = make_pos(i,j)
+                    	groupsLast.append(groupsPos)
                     else:
+                    	groupsPos = make_pos(i,j)
+                    	groups.append([groupsPos])
                     	print "FALSE"
-                    print contentInPosition
+                    print contentInGroupPosition
                 else:
                     groupsPos = make_pos(i,j) #cria posicao correspondente ao conteudo
                     groups.append([groupsPos])
-    print groups
+    print "GRUPOS:\n" + str(groups)
 
 #board_remove_group(<board>, <group>) -> [5 valores]
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 #draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
-board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+#board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+if(is_adjacent((1,2),(2,2))):
+	print "TRUE"
+else:
+	print "FALSE"
