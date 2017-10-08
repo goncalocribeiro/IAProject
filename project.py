@@ -81,53 +81,33 @@ def board_l(board):
 
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
-    groups = {} #dictionary where the color number is the index
+    groups = []
     boardCSize = board_c(board)
     boardLSize = board_l(board)
 
-    for l in range(0,boardLSize):
+    for l in range(0, boardLSize):
         for c in range(0, boardCSize):
-            positionCont = board[l][c] #conteudo da posicao
-            if(color(positionCont)): #posicao tem cor
+            g = []
+            posCont = board[l][c] #conteudo da posicao
+
+            if(color(posCont)): #posicao tem cor
             	currentPos = make_pos(l,c)
-                adjacentPositions = adjacent_positions(currentPos, board)
+                adjacentPositions = adjacent_positions(currentPos, board) #posicoes adjacentes a atual
+                g.append(currentPos)
+                
+                for i in range(len(adjacentPositions)):
+                    adjPos = adjacentPositions[i] #posicao adjacente a posicao que estamos a verificar
+                    adjL = pos_l(adjPos) #linha da posicao adjacente
+                    adjC = pos_c(adjPos) #coluna da posicao adjacente
+                    adjCont = board[adjL][adjC] #conteudo da posicao adjacente
 
-                for adj in range(adjacent_positions):
-                	adjL = pos_l(adj)
-                	adjC = pos_c(adj)
-                	adjCont = board[adjL][adjC]
-
-                	if (positionCont == adjCont):
-                		g = groups[positionCont]
-                		g.append(adj)
-                	#??????????????????????????????????????
-
-
-                if(len(groups) != 0): #existe grupos
-                    groupsLast = groups[len(groups)-1] #ultima lista em groups
-                    print "ULTIMA LISTA: " + str(groupsLast)
-
-                    position = groupsLast[0]
-                    positionLine = pos_l(position)
-                    positionColumn = pos_c(position)
-                    contentInGroupPosition = board[positionLine][positionColumn]
-
-                    if(contentInGroupPosition == positionCont):
-                    	groupsPos = make_pos(i,j)
-                    	groupsLast.append(groupsPos)
-                    else:
-                    	groupsPos = make_pos(i,j)
-                    	groups.append([groupsPos])
-                    	print "FALSE"
-                    print contentInGroupPosition
-                else:
-                    groupsPos = make_pos(i,j) #cria posicao correspondente ao conteudo
-                    groups.append([groupsPos])
+                    if (posCont == adjCont):
+                        g.append(adjPos)
+            groups.append(g)
     print "GRUPOS:\n" + str(groups)
-
 #board_remove_group(<board>, <group>) -> [5 valores]
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
-#draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
-#board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
 #print adjacent_positions((2,2),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
