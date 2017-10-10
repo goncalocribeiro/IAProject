@@ -2,6 +2,7 @@
 # Goncalo Ribeiro 82303
 # Andre Mendonca 82304
 
+import copy
 # ------------------------------------ AUXILIARES ------------------------------------#
 
 #Auxiliar function to draw a board
@@ -45,6 +46,35 @@ def adjacent_positions(pos, board):
 				adjacentPositions.append(currentPos)
 	return adjacentPositions
 
+def found_ajacent_positions(positions, board):
+	subGroup = []
+	for i in range(len(positions)):
+		for j in range(len(positions)):
+			if(is_adjacent(positions[i], positions[j])):
+				if(positions[i] not in subGroup):
+					subGroup.append(positions[i])
+				if(positions[j] not in subGroup):
+					subGroup.append(positions[j])
+	return subGroup
+
+def has_adjacent_content(pos, posContent, board):
+	adjPositions = adjacent_positions(pos, board)
+
+	for adjPos in adjPositions:
+		adjContent = board_position_content(adjPos, board)
+		if(posContent == adjContent):
+			return True
+	return False
+
+def content_in_positions(content, board):
+	positions = []
+	for l in range(len(board)):
+		for c in range(len(board[l])):
+			pos = make_pos(l,c)
+			posContent = board_position_content(pos, board)
+			if(content == posContent):
+				positions.append(pos)
+	return positions
 # ------------------------------------ TIPOS ------------------------------------#
 
 # TAI color
@@ -66,9 +96,6 @@ def pos_l(pos):
 def pos_c(pos):
     return pos[1]
 
-#TAI group
-#Lista [(l,c),(l,c),(l,c),...]
-
 #TAI board
 def board_c(board):
 	return len(board[0])
@@ -76,38 +103,52 @@ def board_c(board):
 def board_l(board):
 	return len(board)
 
-
-# ------------------------------------ OPERACOES ------------------------------------#
+def board_position_content(pos, board):
+	line = pos_l(pos)
+	column = pos_c(pos)
+	return board[line][column]
 
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
-    groups = []
-    boardCSize = board_c(board)
-    boardLSize = board_l(board)
+    modBoard = copy.deepcopy(board) 
+    group = []
+    verifyied = []
+    
+    for l in range(len(board)):
+    	for c in range(len(board[l])):
+    		currentPos = make_pos(l,c)
+    		posContent = board_position_content(currentPos, modBoard)
 
-    for l in range(0, boardLSize):
-        for c in range(0, boardCSize):
-            g = []
-            posCont = board[l][c] #conteudo da posicao
+    		if(posContent != 0):
+    			if(has_adjacent_content(currentPos, posContent, modBoard)):
+    				if(posContent not in verifyied): #cor ainda nao foi verificada
+    					verifyied.append(posContent)
+    					positionsWithContent = content_in_positions(posContent, modBoard)
+    					group.append(found_ajacent_positions(positionsWithContent, modBoard))
+    			else:
+    				group.append([currentPos])
+    print group
 
-            if(color(posCont)): #posicao tem cor
-            	currentPos = make_pos(l,c)
-                adjacentPositions = adjacent_positions(currentPos, board) #posicoes adjacentes a atual
-                g.append(currentPos)
-                
-                for i in range(len(adjacentPositions)):
-                    adjPos = adjacentPositions[i] #posicao adjacente a posicao que estamos a verificar
-                    adjL = pos_l(adjPos) #linha da posicao adjacente
-                    adjC = pos_c(adjPos) #coluna da posicao adjacente
-                    adjCont = board[adjL][adjC] #conteudo da posicao adjacente
 
-                    if (posCont == adjCont):
-                        g.append(adjPos)
-            groups.append(g)
-    print "GRUPOS:\n" + str(groups)
+
+
 #board_remove_group(<board>, <group>) -> [5 valores]
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
-draw_board([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
-board_find_groups([[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+
+#Tabuleiro 4x5, 3 cores
+b0 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
+#Tabuleiro 4x5, 2 cores sem solucao
+b1 = [[1,2,1,2,1],[2,1,2,1,2],[1,2,1,2,1],[2,1,2,1,2]]
+#Tabuleiro 4x5, 3 cores
+b2 = [[1,2,2,3,3],[2,2,2,1,2],[1,2,2,2,2],[1,1,1,1,1]]
+#Tabuleiro 10x4, 3 cores sem solucao
+b3 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[5,1,1,3],[4,5,1,2]]
+#Tabuleiro 10x4, 3 cores
+b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]]
+#Tabuleiro 10x4, 5 cores
+b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
+
+draw_board(b1)
+board_find_groups(b1)
 #print adjacent_positions((2,2),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
