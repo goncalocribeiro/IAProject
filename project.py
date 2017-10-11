@@ -51,12 +51,20 @@ def found_ajacent_positions(positions, board):
 	for i in range(len(positions)):
 		for j in range(len(positions)):
 			if(is_adjacent(positions[i], positions[j])):
-				print "POSITION: " + str(positions[i])
-				print "POSITION AUX: " + str(positions[j])
+
 				if(positions[i] not in subGroup):
-					subGroup.append(positions[i])
+
+					if (len(subGroup)==0):
+						subGroup.append(positions[i])
+					else:
+						for k in range(len(subGroup)):
+							if (is_adjacent(subGroup[k], positions[i])):
+								subGroup.append(positions[i])
+
 				if(positions[j] not in subGroup):
-					subGroup.append(positions[j])
+					for x in range(len(subGroup)):
+						if(is_adjacent(subGroup[x], positions[j])):
+							subGroup.append(positions[j])
 	return subGroup
 
 def has_adjacent_content(pos, posContent, board):
@@ -113,7 +121,7 @@ def board_position_content(pos, board):
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
     modBoard = copy.deepcopy(board) 
-    group = []
+    groups = []
     verifyied = []
     
     for l in range(len(board)):
@@ -126,10 +134,11 @@ def board_find_groups(board):
     				if(posContent not in verifyied): #cor ainda nao foi verificada
     					verifyied.append(posContent)
     					positionsWithContent = content_in_positions(posContent, modBoard)
-    					group.append(found_ajacent_positions(positionsWithContent, modBoard))
+    					found_ajacent_positions(positionsWithContent, groups, modBoard)
+    					#groups.append(found_ajacent_positions(positionsWithContent, modBoard))
     			else:
-    				group.append([currentPos])
-    return group
+    				groups.append([currentPos])
+    return groups
 
 
 
