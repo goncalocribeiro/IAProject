@@ -51,6 +51,8 @@ def found_ajacent_positions(positions, board):
 	for i in range(len(positions)):
 		for j in range(len(positions)):
 			if(is_adjacent(positions[i], positions[j])):
+				print "POSITION: " + str(positions[i])
+				print "POSITION AUX: " + str(positions[j])
 				if(positions[i] not in subGroup):
 					subGroup.append(positions[i])
 				if(positions[j] not in subGroup):
@@ -127,7 +129,7 @@ def board_find_groups(board):
     					group.append(found_ajacent_positions(positionsWithContent, modBoard))
     			else:
     				group.append([currentPos])
-    print group
+    return group
 
 
 
@@ -149,6 +151,5 @@ b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3
 #Tabuleiro 10x4, 5 cores
 b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
 
-draw_board(b1)
-board_find_groups(b1)
-#print adjacent_positions((2,2),[[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]])
+draw_board(b3)
+print board_find_groups(b3)
