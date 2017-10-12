@@ -147,6 +147,27 @@ def board_find_groups(board):
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 
+#https://codereview.stackexchange.com/questions/174823/finding-connected-components-in-python
+
+# A global set containing nodes already visited so that infinite loops do not occur
+already_checked = set()
+
+# Returns the nodes with the same value as self of self's neighbors in a given matrix
+def neighbors(pos, board):
+	return [position for position in adjacent_positions(pos, board) if board_position_content(position, board) == board_position_content(pos, board)]
+
+def connected_values(pos, board):
+    global already_checked
+
+    already_checked.add(pos)
+
+    positions = []
+    for neighbor in neighbors(pos, board):
+        positions.append(neighbor)
+        if neighbor not in already_checked:
+            positions += connected_values(neighbor, board)
+    return positions
+
 #Tabuleiro 4x5, 3 cores
 b0 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
 #Tabuleiro 4x5, 2 cores sem solucao
@@ -160,5 +181,10 @@ b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3
 #Tabuleiro 10x4, 5 cores
 b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
 
+#draw_board(b3)
+#print board_find_groups(b3)
+
+#print value_neighbors((1,1), b3)
+print connected_values((0,1), b3)
 draw_board(b3)
-print board_find_groups(b3)
+print already_checked
