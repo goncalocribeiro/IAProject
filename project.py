@@ -46,45 +46,6 @@ def adjacent_positions(pos, board):
 				adjacentPositions.append(currentPos)
 	return adjacentPositions
 
-def found_ajacent_positions(positions, board):
-	subGroup = []
-	for i in range(len(positions)):
-		for j in range(len(positions)):
-			if(is_adjacent(positions[i], positions[j])):
-
-				if(positions[i] not in subGroup):
-
-					if (len(subGroup)==0):
-						subGroup.append(positions[i])
-					else:
-						for k in range(len(subGroup)):
-							if (is_adjacent(subGroup[k], positions[i])):
-								subGroup.append(positions[i])
-
-				if(positions[j] not in subGroup):
-					for x in range(len(subGroup)):
-						if(is_adjacent(subGroup[x], positions[j])):
-							subGroup.append(positions[j])
-	return subGroup
-
-def has_adjacent_content(pos, posContent, board):
-	adjPositions = adjacent_positions(pos, board)
-
-	for adjPos in adjPositions:
-		adjContent = board_position_content(adjPos, board)
-		if(posContent == adjContent):
-			return True
-	return False
-
-def content_in_positions(content, board):
-	positions = []
-	for l in range(len(board)):
-		for c in range(len(board[l])):
-			pos = make_pos(l,c)
-			posContent = board_position_content(pos, board)
-			if(content == posContent):
-				positions.append(pos)
-	return positions
 # ------------------------------------ TIPOS ------------------------------------#
 
 # TAI color
@@ -122,51 +83,52 @@ def board_position_content(pos, board):
 def board_find_groups(board):
     modBoard = copy.deepcopy(board) 
     groups = []
-    verifyied = []
+    group = []
+    toAdd = True
     
-    for l in range(len(board)):
-    	for c in range(len(board[l])):
-    		currentPos = make_pos(l,c)
-    		posContent = board_position_content(currentPos, modBoard)
-
-    		if(posContent != 0):
-    			if(has_adjacent_content(currentPos, posContent, modBoard)):
-    				if(posContent not in verifyied): #cor ainda nao foi verificada
-    					verifyied.append(posContent)
-    					positionsWithContent = content_in_positions(posContent, modBoard)
-    					found_ajacent_positions(positionsWithContent, groups, modBoard)
-    					#groups.append(found_ajacent_positions(positionsWithContent, modBoard))
-    			else:
-    				groups.append([currentPos])
+    for line in range(len(modBoard)):
+    	for column in range(len(modBoard[line])):
+    		position = make_pos(line, column)
+    		group = connected_colors(position, modBoard)
+    		
+    		if len(group) == 0:
+    			groups.append([position])
+    		else:
+    			groups.append(group)
     return groups
-
-
-
 
 #board_remove_group(<board>, <group>) -> [5 valores]
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
-
 #https://codereview.stackexchange.com/questions/174823/finding-connected-components-in-python
 
-# A global set containing nodes already visited so that infinite loops do not occur
 already_checked = set()
+nodes = set()
 
-# Returns the nodes with the same value as self of self's neighbors in a given matrix
-def neighbors(pos, board):
-	return [position for position in adjacent_positions(pos, board) if board_position_content(position, board) == board_position_content(pos, board)]
+def value_neighbors(pos, matrix):
+	positions = []
+	posContent = board_position_content(pos, matrix)
+	for adjPos in adjacent_positions(pos, matrix):
+		adjContent = board_position_content(adjPos, matrix)
+		if posContent == adjContent:
+			positions.append(adjPos)
+	return positions 
 
-def connected_values(pos, board):
-    global already_checked
+def connected_values(node, matrix):
+	global already_checked
+	already_checked.add(node)
+	global nodes
 
-    already_checked.add(pos)
+	valueNeighbors = value_neighbors(node, matrix)
 
-    positions = []
-    for neighbor in neighbors(pos, board):
-        positions.append(neighbor)
-        if neighbor not in already_checked:
-            positions += connected_values(neighbor, board)
-    return positions
+	if (len(valueNeighbors) != 0):
+		for value_neighbor in valueNeighbors:
+			nodes.add(value_neighbor)
+			if value_neighbor not in already_checked:
+				connected_values(value_neighbor, matrix)
+	else:
+		nodes.add(node)
+	return list(nodes)
 
 #Tabuleiro 4x5, 3 cores
 b0 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
@@ -181,10 +143,24 @@ b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3
 #Tabuleiro 10x4, 5 cores
 b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
 
-#draw_board(b3)
 #print board_find_groups(b3)
+#print all_connected_values(b3)
+#draw_board(b3)
 
-#print value_neighbors((1,1), b3)
-print connected_values((0,1), b3)
+def func(b):
+	s = []
+	global already_checked
+	global nodes
+	for line in range(len(b)):
+		for column in range(len(b[line])):
+			a = connected_values((line,column), b)
+			if a not in s:
+				print a
+				s.append(a)
+			already_checked = set()
+			nodes = set()
+	return s
+
+r = func(b3)
+print r
 draw_board(b3)
-print already_checked
