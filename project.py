@@ -18,7 +18,7 @@ def draw_board(board):
         line = board[i]
         for j in range(len(line)):
             draw_line += str(line[j]) + " "
-        print draw_line
+        print(draw_line)
         draw_line = ""
 
 def is_adjacent(pos1, pos2):
@@ -121,9 +121,10 @@ def board_find_groups(board):
 		for column in range(len(modBoard[line])):
 			currentPos = make_pos(line, column)
 
-			if currentPos not in already_checked:
-				groups.append(connected_colors(currentPos, modBoard))
-				nodes = set() #reset nodes from last connected_values search
+			if board_position_content(currentPos, modBoard) != 0: #ignore the zeros on board
+				if currentPos not in already_checked:
+					groups.append(connected_colors(currentPos, modBoard))
+					nodes = set() #reset nodes from last connected_values search
 	return groups
 
 #board_remove_group(<board>, <group>) -> [5 valores]
@@ -131,7 +132,7 @@ def board_find_groups(board):
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 
 #Tabuleiro 4x5, 3 cores
-b0 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
+b0 = [[1,0,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
 #Tabuleiro 4x5, 2 cores sem solucao
 b1 = [[1,2,1,2,1],[2,1,2,1,2],[1,2,1,2,1],[2,1,2,1,2]]
 #Tabuleiro 4x5, 3 cores
@@ -143,9 +144,5 @@ b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3
 #Tabuleiro 10x4, 5 cores
 b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
 
-#print board_find_groups(b3)
-#print all_connected_values(b3)
-#draw_board(b3)
-
-print board_find_groups(b0)
+print(board_find_groups(b0))
 draw_board(b0)
