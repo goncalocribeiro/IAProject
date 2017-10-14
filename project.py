@@ -3,6 +3,11 @@
 # Andre Mendonca 82304
 
 import copy
+
+# ------------------------------------ GLOBAL VARIABLES ------------------------------------#
+already_checked = set()
+nodes = set()
+
 # ------------------------------------ AUXILIARES ------------------------------------#
 
 #Auxiliar function to draw a board
@@ -30,21 +35,47 @@ def is_adjacent(pos1, pos2):
 			return True
 	return False
 
-def adjacent_positions(pos, board):
+def neighbors(position, board):
 	boardLSize = board_l(board)
 	boardCSize = board_c(board)
 
-	posLine = pos_l(pos)
-	posColumn = pos_c(pos)
+	posLine = pos_l(position)
+	posColumn = pos_c(position)
 
-	adjacentPositions = []
+	neighbors = []
 
 	for l in range(0,boardLSize):
 		for c in range(0,boardCSize): 
 			currentPos = make_pos(l,c)
-			if(is_adjacent(pos,currentPos)):
-				adjacentPositions.append(currentPos)
-	return adjacentPositions
+			if(is_adjacent(position,currentPos)):
+				neighbors.append(currentPos)
+	return neighbors
+
+def neighbors_same_color(position, board):
+	positions = []
+	posContent = board_position_content(position, board)
+
+	for neighbor in neighbors(position, board):
+		neighbor_content = board_position_content(neighbor, board)
+		if posContent == neighbor_content:
+			positions.append(neighbor)
+	return positions 
+
+def connected_colors(position, board):
+	global already_checked
+	already_checked.add(position)
+	global nodes
+
+	neighbors = neighbors_same_color(position, board)
+
+	if (len(neighbors) != 0):
+		for neighbor in neighbors:
+			nodes.add(neighbor)
+			if neighbor not in already_checked:
+				connected_colors(neighbor, board)
+	else:
+		nodes.add(position)
+	return list(nodes)
 
 # ------------------------------------ TIPOS ------------------------------------#
 
@@ -81,61 +112,30 @@ def board_position_content(pos, board):
 
 #board_find_groups(<board>) -> [2 valores]
 def board_find_groups(board):
-    modBoard = copy.deepcopy(board) 
-    groups = []
-    group = []
-    toAdd = True
-    
-    for line in range(len(modBoard)):
-    	for column in range(len(modBoard[line])):
-    		position = make_pos(line, column)
-    		group = connected_colors(position, modBoard)
-    		
-    		if len(group) == 0:
-    			groups.append([position])
-    		else:
-    			groups.append(group)
-    return groups
+	modBoard = copy.deepcopy(board)
+	groups = []
+	global already_checked
+	global nodes
+
+	for line in range(len(modBoard)):
+		for column in range(len(modBoard[line])):
+			currentPos = make_pos(line, column)
+
+			if currentPos not in already_checked:
+				groups.append(connected_colors(currentPos, modBoard))
+				nodes = set() #reset nodes from last connected_values search
+	return groups
 
 #board_remove_group(<board>, <group>) -> [5 valores]
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
-#https://codereview.stackexchange.com/questions/174823/finding-connected-components-in-python
-
-already_checked = set()
-nodes = set()
-
-def value_neighbors(pos, matrix):
-	positions = []
-	posContent = board_position_content(pos, matrix)
-	for adjPos in adjacent_positions(pos, matrix):
-		adjContent = board_position_content(adjPos, matrix)
-		if posContent == adjContent:
-			positions.append(adjPos)
-	return positions 
-
-def connected_values(node, matrix):
-	global already_checked
-	already_checked.add(node)
-	global nodes
-
-	valueNeighbors = value_neighbors(node, matrix)
-
-	if (len(valueNeighbors) != 0):
-		for value_neighbor in valueNeighbors:
-			nodes.add(value_neighbor)
-			if value_neighbor not in already_checked:
-				connected_values(value_neighbor, matrix)
-	else:
-		nodes.add(node)
-	return list(nodes)
 
 #Tabuleiro 4x5, 3 cores
 b0 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
 #Tabuleiro 4x5, 2 cores sem solucao
 b1 = [[1,2,1,2,1],[2,1,2,1,2],[1,2,1,2,1],[2,1,2,1,2]]
 #Tabuleiro 4x5, 3 cores
-b2 = [[1,2,2,3,3],[2,2,2,1,2],[1,2,2,2,2],[1,1,1,1,1]]
+b2 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
 #Tabuleiro 10x4, 3 cores sem solucao
 b3 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[5,1,1,3],[4,5,1,2]]
 #Tabuleiro 10x4, 3 cores
@@ -147,20 +147,5 @@ b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1
 #print all_connected_values(b3)
 #draw_board(b3)
 
-def func(b):
-	s = []
-	global already_checked
-	global nodes
-	for line in range(len(b)):
-		for column in range(len(b[line])):
-			a = connected_values((line,column), b)
-			if a not in s:
-				print a
-				s.append(a)
-			already_checked = set()
-			nodes = set()
-	return s
-
-r = func(b3)
-print r
-draw_board(b3)
+print board_find_groups(b0)
+draw_board(b0)
