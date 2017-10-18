@@ -3,6 +3,7 @@
 # Andre Mendonca 82304
 
 import copy
+from search import *
 
 # ------------------------------------ GLOBAL VARIABLES ------------------------------------#
 already_checked = set()
@@ -210,6 +211,33 @@ class sg_state:
 	#necessary for A* and other informed searches
 	#def __lt__(self, state):
 
+class same_game(Problem):
+	"""Models a Same Game problem as a satisfaction problem.
+	   A solution cannot have pieces left on the board."""
+
+	def __init__(self, board):
+		self.board = board
+		self.initial = sg_state(board)
+
+	def actions(self, state):
+		return False
+		#Returns a list of groups with more than 2 elements
+
+	def result (self, state, action):
+		#Returns a new state (call board_remove_group)
+		return False
+
+	def goal_test(self, state):
+		#Returns True if state is the goal state (when board_find_groups returns an empty list)
+		return False
+
+	def path_cost(self, c, state1, action, state2):
+		#Return for example c+1
+		return False
+
+	def h(self, node):
+		#Heuristic method to help A* and Gridy search
+		return False
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 
