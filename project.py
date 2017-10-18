@@ -10,7 +10,7 @@ nodes = set()
 
 # ------------------------------------ AUXILIARES ------------------------------------#
 
-#Auxiliar function to draw a board
+#Auxiliar function to draw a board like a matrix
 #draw_board(<board>)
 def draw_board(board):
     draw_line = ""
@@ -21,6 +21,7 @@ def draw_board(board):
         print(draw_line)
         draw_line = ""
 
+#returns True is pos2 is an adjacent position to pos1, False in other case
 def is_adjacent(pos1, pos2):
 	pos1Line = pos_l(pos1)
 	pos1Column = pos_c(pos1)
@@ -35,6 +36,7 @@ def is_adjacent(pos1, pos2):
 			return True
 	return False
 
+#returns a list of all adjacent positions to position
 def neighbors(position, board):
 	boardLSize = board_l(board)
 	boardCSize = board_c(board)
@@ -51,6 +53,7 @@ def neighbors(position, board):
 				neighbors.append(currentPos)
 	return neighbors
 
+#returns a list of all adjacent positions to position that has the same color(content)
 def neighbors_same_color(position, board):
 	positions = []
 	posContent = board_position_content(position, board)
@@ -61,6 +64,7 @@ def neighbors_same_color(position, board):
 			positions.append(neighbor)
 	return positions 
 
+#returns the group of positions connected to position with the same color
 def connected_colors(position, board):
 	global already_checked
 	already_checked.add(position)
@@ -99,6 +103,7 @@ def vertical_compaction(board):
 				count = 0
 				break
 	return board
+
 
 def horizontal_compaction(board):
 	row_init = board_l(board)-1
@@ -196,6 +201,14 @@ def board_remove_group(board, group):
 	#return modBoard
 	#return vertical_compaction(modBoard)
 	return horizontal_compaction(vertical_compaction(modBoard))
+
+
+class sg_state:
+	def __init__(self, board):
+		self.board = board
+
+	#necessary for A* and other informed searches
+	#def __lt__(self, state):
 
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
