@@ -203,6 +203,18 @@ def board_remove_group(board, group):
 	#return vertical_compaction(modBoard)
 	return horizontal_compaction(vertical_compaction(modBoard))
 
+#remove every single group from groups
+def clean_single_lists(groups):
+	to_delete = []
+	for index in range(len(groups)):
+		if len(groups[index]) == 1:
+			to_delete.append(groups[index])
+
+	for lst in to_delete:
+		groups.remove(lst)
+
+	return groups
+
 
 class sg_state:
 	def __init__(self, board):
@@ -220,8 +232,8 @@ class same_game(Problem):
 		self.initial = sg_state(board)
 
 	def actions(self, state):
-		return False
 		#Returns a list of groups with more than 2 elements
+		return clean_single_lists(board_find_groups(state.board))
 
 	def result (self, state, action):
 		#Returns a new state (call board_remove_group)
@@ -271,7 +283,7 @@ r11 = [[0, 0, 0, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 3, 1], [0, 0, 2, 2, 1, 2, 2, 2, 3
 [3, 3, 3, 2, 2, 2, 3, 3, 3, 1, 3, 3, 2, 1, 1], [3, 2, 1, 2, 1, 3, 1, 2, 1, 2, 3, 1, 1, 3, 3], [2, 3, 1, 2, 3, 3, 1, 2, 3, 3, 3, 2, 1, 1, 1], 
 [2, 2, 1, 1, 2, 1, 2, 2, 1, 1, 3, 2, 2, 2, 2]]
 
-#draw_board(b13)
+#draw_board([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])
 #print
 #print
 #draw_board(r9)
