@@ -230,6 +230,7 @@ class same_game(Problem):
 	def __init__(self, board):
 		self.board = board
 		self.initial = sg_state(board)
+		self.goal = [] #the goal is to get an empty list from actions
 
 	def actions(self, state):
 		#Returns a list of groups with more than 2 elements
@@ -237,19 +238,20 @@ class same_game(Problem):
 
 	def result (self, state, action):
 		#Returns a new state (call board_remove_group)
-		return False
+		return sg_state(board_remove_group(state.board, action))
 
 	def goal_test(self, state):
 		#Returns True if state is the goal state (when board_find_groups returns an empty list)
-		return False
+		return board_find_groups(state.board) == self.goal
 
 	def path_cost(self, c, state1, action, state2):
 		#Return for example c+1
 		return False
 
 	def h(self, node):
-		#Heuristic method to help A* and Gridy search
-		return False
+		"""Needed for informed search
+		Heuristic method to help A* and Gridy search
+		return False"""
 
 # ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
 
