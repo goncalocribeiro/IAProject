@@ -1,7 +1,6 @@
- # PROJETO IA 2017/2018
 # Goncalo Ribeiro 82303
 # Andre Mendonca 82304
-
+# AL030
 import copy
 from search import *
 
@@ -215,13 +214,13 @@ def clean_single_lists(groups):
 
 	return groups
 
-
 class sg_state:
 	def __init__(self, board):
 		self.board = board
 
 	#necessary for A* and other informed searches
-	#def __lt__(self, state):
+	def __lt__(self, state):
+		return self.board < state.board
 
 class same_game(Problem):
 	"""Models a Same Game problem as a satisfaction problem.
@@ -230,7 +229,7 @@ class same_game(Problem):
 	def __init__(self, board):
 		self.board = board
 		self.initial = sg_state(board)
-		self.goal = [] #the goal is to get an empty list from actions
+		self.goal = sg_state([]) #the goal is to get an empty list from actions
 
 	def actions(self, state):
 		#Returns a list of groups with more than 2 elements
@@ -242,56 +241,9 @@ class same_game(Problem):
 
 	def goal_test(self, state):
 		#Returns True if state is the goal state (when board_find_groups returns an empty list)
-		return board_find_groups(state.board) == self.goal
-
-	def path_cost(self, c, state1, action, state2):
-		#Return for example c+1
-		return False
+		return board_find_groups(state.board) == self.goal.board
 
 	def h(self, node):
 		"""Needed for informed search
 		Heuristic method to help A* and Gridy search
 		return False"""
-
-# ------------------------------------ EXEMPLOS DE CHAMADAS ------------------------------------#
-
-#Tabuleiro 4x5, 3 cores
-b0 = [[1,0,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
-#Tabuleiro 4x5, 2 cores sem solucao
-b1 = [[1,2,1,2,1],[2,1,2,1,2],[1,2,1,2,1],[2,1,2,1,2]]
-#Tabuleiro 4x5, 3 cores
-b2 = [[1,2,2,3,3],[2,2,2,1,3],[1,2,2,2,2],[1,1,1,1,1]]
-#Tabuleiro 10x4, 3 cores sem solucao
-b3 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[5,1,1,3],[4,5,1,2]]
-#Tabuleiro 10x4, 3 cores
-b4 = [[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]]
-#Tabuleiro 10x4, 5 cores
-b5 = [[1,1,5,3],[5,3,5,3],[1,2,5,4],[5,2,1,4],[5,3,5,1],[5,3,4,4],[5,5,2,5],[1,1,3,1],[1,2,1,3],[3,3,5,5]]
-#tabuleiro 4x5 com 0s
-b6 = [[0,0,0,0,0],[0,2,3,3,0],[1,2,1,3,0],[2,2,2,2,0]]
-
-b01 = [[0, 0, 0, 2], [0, 0, 3, 3], [0, 0, 2, 1], [3, 3, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
-
-b11 = [[1,3,2,1,2,1,2,2,1,2,2,1,1,3,1],[1,3,3,2,1,2,2,2,3,1,2,1,2,3,1],[1,1,1,2,3,2,3,3,2,2,3,1,1,3,1],[1,2,2,2,3,3,3,3,1,2,1,2,1,3,2],
-[1,3,1,3,2,2,2,2,3,1,1,2,3,2,1],[1,1,2,2,2,1,1,3,2,1,2,3,1,3,1],[3,1,3,2,2,2,3,3,3,1,3,3,2,1,1],[3,2,1,2,1,3,1,2,1,2,3,1,1,3,3],
-[2,3,1,2,3,3,1,2,3,3,3,2,1,1,1],[2,2,1,1,2,1,2,2,1,1,3,2,2,2,2]]
-
-b13 = [[4,4,4,2],[4,4,4,3],[4,4,4,1],[4,4,4,4],[4,4,4,2],[4,4,4,4],[4,4,4,3],[4,4,4,3],[4,4,4,4],[4,4,4,2]]
-
-r9 = [[0, 0, 0, 2], [0, 0, 3, 3], [0, 0, 2, 1], [3, 3, 3, 3], [3, 3, 1, 2], [2, 2, 2, 2], [3, 1, 2, 3], [2, 3, 2, 3], [2, 1, 1, 3], [2, 3, 1, 2]]
-
-r11 = [[0, 0, 0, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 3, 1], [0, 0, 2, 2, 1, 2, 2, 2, 3, 1, 2, 1, 2, 3, 1], [0, 0, 3, 2, 3, 2, 3, 3, 2, 2, 3, 1, 1, 3, 1], 
-[0, 3, 2, 2, 3, 3, 3, 3, 1, 2, 1, 2, 1, 3, 2], [0, 3, 1, 3, 2, 2, 2, 2, 3, 1, 1, 2, 3, 2, 1], [0, 2, 2, 2, 2, 1, 1, 3, 2, 1, 2, 3, 1, 3, 1], 
-[3, 3, 3, 2, 2, 2, 3, 3, 3, 1, 3, 3, 2, 1, 1], [3, 2, 1, 2, 1, 3, 1, 2, 1, 2, 3, 1, 1, 3, 3], [2, 3, 1, 2, 3, 3, 1, 2, 3, 3, 3, 2, 1, 1, 1], 
-[2, 2, 1, 1, 2, 1, 2, 2, 1, 1, 3, 2, 2, 2, 2]]
-
-#draw_board([[3,1,3,2],[1,1,1,3],[1,3,2,1],[1,1,3,3],[3,3,1,2],[2,2,2,2],[3,1,2,3],[2,3,2,3],[2,1,1,3],[2,3,1,2]])
-#print
-#print
-#draw_board(r9)
-#print(board_find_groups(t3))
-#draw_board(board_remove_group(b6, [(1, 1), (2, 1), (3, 0), (3, 1), (3, 2),(3,3)]))
-#draw_board(board_remove_group(b4, [(0, 1), (1, 0), (1, 1), (1, 2), (2, 0), (3, 0), (3, 1)]))
-#draw_board(board_remove_group(b11, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (5, 1), (6, 1), (2, 1), (2, 2)]))
-#draw_board(board_remove_group(b13, [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (9, 1), (8, 1), (7, 1), (6, 1), (5, 1), (4, 1), (3, 1), (2, 1), (1, 1), (0, 1), (0, 2), (1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2), (9, 2), (8, 3), (5, 3), (3, 3)]))
-
